@@ -6,6 +6,7 @@ class Config:
     REDIRECT_URI = "http://localhost:5000/callback"
     REALM_ID = "9341454578080950"
     SECRET_KEY = os.urandom(24)
+    ENV = os.getenv('FLASK_ENV', 'development')  # Default to production if not set
     
     # API endpoints
     AUTH_BASE_URL = "https://appcenter.intuit.com/connect/oauth2"
