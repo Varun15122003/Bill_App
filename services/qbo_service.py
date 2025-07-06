@@ -36,6 +36,7 @@ class QBOService:
             raise Exception(f"Failed to fetch customers: {str(e)}")
     
     def process_bills(self, bills_data):
+        current_time = datetime.utcnow()
         for b in bills_data:
             qb_bill_id_str = b.get("Id")
             if not qb_bill_id_str:
@@ -102,6 +103,7 @@ class QBOService:
                     balance=balance,
                     vendor_id=vendor.id if vendor else None,
                     currency_id=currency.id if currency else None,
+                    fetch_date=current_time
                 )
                 self.db.add(bill)
                 bill_meta = BillMetaData(
@@ -116,6 +118,7 @@ class QBOService:
                 bill.balance = balance
                 bill.vendor_id = vendor.id if vendor else bill.vendor_id
                 bill.currency_id = currency.id if currency else bill.currency_id
+                bill.fetch_date = current_time
 
                 if bill.bill_metadata:
                     bill.bill_metadata.create_time = parsed_create_time if parsed_create_time else bill.bill_metadata.create_time
@@ -156,6 +159,7 @@ class QBOService:
         self.db.add(line_item)
     
     def process_customers(self, customers_data):
+        current_time = datetime.utcnow()
         for c_data in customers_data:
             qb_customer_id = c_data.get("Id")
             if not qb_customer_id:
@@ -186,6 +190,8 @@ class QBOService:
             customer.taxable = c_data.get("Taxable", False)
             customer.print_on_check_name = c_data.get("PrintOnCheckName")
             customer.balance = float(c_data.get("Balance", 0))
+            customer.fetch_date = current_time
+
 
             # Process Address
             bill_addr_data = c_data.get("BillAddr")

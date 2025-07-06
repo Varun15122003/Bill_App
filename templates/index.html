@@ -15,6 +15,19 @@
             color: white; 
         }
         .disabled { opacity: 0.5; pointer-events: none; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -45,13 +58,14 @@
     <div>
         <h2>Bills ({{ bills_total }})</h2>
         <p>Page {{ bills_page }} of {{ bills_total_pages }}</p>
-        <table border="1" style="width:100%">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Date</th>
+                    <th>Transaction Date</th>
                     <th>Vendor</th>
                     <th>Amount</th>
+                    <th>Fetched Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +74,8 @@
                     <td>{{ bill.bill_id }}</td>
                     <td>{{ bill.txn_date.strftime('%Y-%m-%d') if bill.txn_date else '' }}</td>
                     <td>{{ bill.vendor.name if bill.vendor else '' }}</td>
-                    <td>{{ bill.total_amt }}</td>
+                    <td>{{ "%.2f"|format(bill.total_amt) }}</td>
+                    <td>{{ bill.fetch_date.strftime('%Y-%m-%d') if bill.fetch_date else '' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -87,13 +102,14 @@
     <div>
         <h2>Customers ({{ customers_total }})</h2>
         <p>Page {{ customers_page }} of {{ customers_total_pages }}</p>
-        <table border="1" style="width:100%">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Company</th>
                     <th>Email</th>
+                    <th>Fetched Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,6 +119,7 @@
                     <td>{{ customer.display_name }}</td>
                     <td>{{ customer.company_name }}</td>
                     <td>{{ customer.primary_email_addr }}</td>
+                    <td>{{ customer.fetch_date.strftime('%Y-%m-%d ') if customer.fetch_date else '' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

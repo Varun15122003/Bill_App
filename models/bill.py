@@ -1,5 +1,5 @@
 # models/bill.py
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from models.base import Base
 from database import db
@@ -41,12 +41,13 @@ class Bill(db.Model):
     __tablename__ = "bills"
     id = Column(Integer, primary_key=True, index=True)
     bill_id = Column(String(20), unique=True)
-    txn_date = Column(DateTime)
-    due_date = Column(DateTime)
+    txn_date = Column(DateTime)  # Transaction date from QuickBooks
+    due_date = Column(DateTime)  # Due date from QuickBooks
     total_amt = Column(Float)
     balance = Column(Float)
     vendor_id = Column(Integer, ForeignKey('vendors.id'))
     currency_id = Column(Integer, ForeignKey('currencies.id'))
+    fetch_date = Column(DateTime, server_default=func.now(), onupdate=func.now())
     vendor = relationship("Vendor", back_populates="bills")
     currency = relationship("Currency", back_populates="bills")
     bill_metadata = relationship("BillMetaData", uselist=False, back_populates="bill")

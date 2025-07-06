@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean, func
 from sqlalchemy.orm import relationship
 from models.base import Base
 from database import db
@@ -48,6 +48,7 @@ class Customer(db.Model):
     taxable = Column(Boolean, default=False)
     print_on_check_name = Column(String(255))
     balance = Column(Float)
+    fetch_date = Column(DateTime, server_default=func.now(), onupdate=func.now())  # When we fetched this record
 
     bill_addr = relationship("CustomerAddress", uselist=False, back_populates="customer", cascade="all, delete-orphan")
     customer_metadata_info = relationship("CustomerMetaData", uselist=False, back_populates="customer", cascade="all, delete-orphan")
